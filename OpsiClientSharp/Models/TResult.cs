@@ -1,6 +1,6 @@
 namespace OpsiClientSharp.Models
 {
-    public class CommandResponse<T>
+    public class TResult<T>
     {
         public int Id { get; set; }
 

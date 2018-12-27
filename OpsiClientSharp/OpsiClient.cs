@@ -17,21 +17,27 @@ namespace OpsiClientSharp
     /// </summary>
     public class OpsiClient
     {
-        private CookieContainer _cookieContainer = new CookieContainer();
+        private readonly CookieContainer _cookieContainer = new CookieContainer();
 
         /// <summary>
         /// HTTP-Client handling the communication with the OPSI server
         /// </summary>
-        private HttpClient _httpClient;
+        private readonly HttpClient _httpClient;
 
         /// <summary>
         /// RPC endpoint of the Opsi server
         /// </summary>
-        private string _opsiServerRpcEndpoint;
+        public string OpsiServerRpcEndpoint { get; }
 
         public OpsiClient(string opsiServerRpcEndpoint, string username, string password, bool ignoreInvalidCert = false)
         {
-            _opsiServerRpcEndpoint = opsiServerRpcEndpoint;
+            // Null Check parameters
+            OpsiServerRpcEndpoint = opsiServerRpcEndpoint ?? throw new ArgumentNullException(nameof(opsiServerRpcEndpoint));
+
+            if (username == null)
+                throw new ArgumentNullException(nameof(username));
+            if (password == null)
+                throw new ArgumentNullException(nameof(password));
 
             // Set cookie container
             HttpClientHandler httpClientHandler = new HttpClientHandler {
@@ -43,8 +49,9 @@ namespace OpsiClientSharp
                 httpClientHandler.ServerCertificateCustomValidationCallback = (request, cert, chain, errors) => true;
 
             // Create http Client
-            _httpClient = new HttpClient(httpClientHandler);
-            _httpClient.Timeout = TimeSpan.FromSeconds(10);
+            _httpClient = new HttpClient(httpClientHandler) {
+                Timeout = TimeSpan.FromSeconds(10)
+            };
 
             // Set Basic Auth header
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.ASCII.GetBytes($"{username}:{password}")));
@@ -55,10 +62,13 @@ namespace OpsiClientSharp
         /// </summary>
         /// <param name="jsonData">The json data of the json-rpc request</param>
         /// <returns></returns>
-        public async Task<CommandResponse<T>> Execute<T>(string jsonData) where T : Result
+        public async Task<TResult<T>> ExecuteAsync<T>(string jsonData) where T : Result
         {
+            if (jsonData == null)
+                throw new ArgumentNullException(nameof(jsonData));
+
             // Send json-rpc request
-            HttpResponseMessage response = await _httpClient.PostAsync(_opsiServerRpcEndpoint, new StringContent(jsonData, Encoding.UTF8, "application/json"))
+            HttpResponseMessage response = await _httpClient.PostAsync(OpsiServerRpcEndpoint, new StringContent(jsonData, Encoding.UTF8, "application/json"))
                 .ConfigureAwait(false);
 
             // Read the response
@@ -69,13 +79,11 @@ namespace OpsiClientSharp
                 throw new OpsiClientRequestException($"Server returns an error: {response.StatusCode}. Message: {content}");
 
             // Parse content to Json
-            var commandResponse = JsonConvert.DeserializeObject<CommandResponse<T>>(content, new JsonSettings());
+            var commandResponse = JsonConvert.DeserializeObject<TResult<T>>(content, new JsonSettings());
 
             // Is there an OPSI server error?
             if (commandResponse.Error != null)
-            {
                 throw new OpsiClientRequestException($"Server returns an error: {commandResponse.Error.Message}.");
-            }
 
             return commandResponse;
         }
