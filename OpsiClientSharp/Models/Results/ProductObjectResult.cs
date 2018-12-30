@@ -1,8 +1,9 @@
 using System.Collections.Generic;
+using OpsiClientSharp.Utils;
 
 namespace OpsiClientSharp.Models.Results
 {
-    public class ProductObjectResult
+    public class ProductObjectResult : JsonSerializable
     {
         public string OnceScript { get; set; }
         public string Ident { get; set; }

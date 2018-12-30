@@ -1,0 +1,12 @@
+--- /usr/lib/python2.7/dist-packages/OPSI/Service/Worker.py.orig    2018-12-30 18:09:09.281823864 +0000
++++ /usr/lib/python2.7/dist-packages/OPSI/Service/Worker.py 2018-12-30 18:09:27.165849477 +0000
+@@ -559,6 +559,8 @@
+        if not self._callInterface:
+            raise RuntimeError(u"Call interface not defined in %s" % self)
+ 
++       logger.notice(u"-----> Received raw rpc request {0}", self.query)
++
+        try:
+            rpcs = fromJson(self.query, preventObjectCreation=True)
+            if not rpcs:
+

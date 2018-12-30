@@ -1,9 +1,10 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using OpsiClientSharp.Utils;
 
 namespace OpsiClientSharp.Models.Results
 {
-    public class ClientObjectResult
+    public class ClientObjectResult : JsonSerializable
     {
         public string Ident { get; set; }
         public string Description { get; set; }

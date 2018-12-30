@@ -9,7 +9,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using OpsiClientSharp.Exceptions;
-using OpsiClientSharp.Models;
 using OpsiClientSharp.Utils;
 
 namespace OpsiClientSharp

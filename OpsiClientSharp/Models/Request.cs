@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 
-namespace OpsiClientSharp.Models
+namespace OpsiClientSharp.Utils
 {
     /// <summary>
     /// Base class for an opsi rpc request

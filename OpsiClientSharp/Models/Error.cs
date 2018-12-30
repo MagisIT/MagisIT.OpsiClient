@@ -1,7 +1,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace OpsiClientSharp.Models
+namespace OpsiClientSharp.Utils
 {
     public class Error
     {

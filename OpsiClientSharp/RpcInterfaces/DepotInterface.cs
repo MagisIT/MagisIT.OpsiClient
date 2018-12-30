@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using OpsiClientSharp.Models;
+using OpsiClientSharp.Utils;
 
 namespace OpsiClientSharp.RpcInterfaces
 {

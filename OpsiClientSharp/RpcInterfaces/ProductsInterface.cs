@@ -2,8 +2,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using OpsiClientSharp.Exceptions;
-using OpsiClientSharp.Models;
 using OpsiClientSharp.Models.Results;
+using OpsiClientSharp.Utils;
 using OpsiClientSharp.Types;
 
 namespace OpsiClientSharp.RpcInterfaces
@@ -46,7 +46,7 @@ namespace OpsiClientSharp.RpcInterfaces
         {
             return OpsiClient.ExecuteAsync<List<ProductObjectResult>>(
                 new Request(GetFullMethodName("getObjects"), new Dictionary<string, string> {
-                    {"ident", productId}
+                    {"id", productId}
                 })
             );
         }

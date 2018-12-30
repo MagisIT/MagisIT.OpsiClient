@@ -2,10 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using OpsiClientSharp.Exceptions;
-using OpsiClientSharp.Models;
 using OpsiClientSharp.Models.Results;
 using OpsiClientSharp.Types;
+using OpsiClientSharp.Utils;
 
 namespace OpsiClientSharp.RpcInterfaces
 {
@@ -39,11 +41,10 @@ namespace OpsiClientSharp.RpcInterfaces
         {
             return OpsiClient.ExecuteAsync<List<ProductOnClientResult>>(
                 new Request(GetFullMethodName("getObjects"), new Dictionary<string, string> {
-                    {"productId", productId}
+                    {"productId", productId}, {"clientId", ClientId}
                 })
             );
         }
-
 
         /// <summary>
         /// Checks whether the product is already defined on the server for this client
@@ -65,7 +66,7 @@ namespace OpsiClientSharp.RpcInterfaces
         /// <returns></returns>
         public async Task CreateProductAsync(string productId, ProductType productType)
         {
-            // Check wheter the product id exists
+            // Check whether the product id exists
             ProductsInterface productsInterface = new ProductsInterface(OpsiClient);
 
             if (!await productsInterface.ExistsAsync(productId))
@@ -78,9 +79,30 @@ namespace OpsiClientSharp.RpcInterfaces
             await OpsiClient.ExecuteAsync<string>(new Request(GetFullMethodName("create"), productId, productType.ToOpsiName(), ClientId));
         }
 
-        public async Task SetProductActionAsync(string productId)
+        /// <summary>
+        /// Sets a product action e.g for setup
+        /// </summary>
+        /// <param name="productId"></param>
+        /// <param name="productAction"></param>
+        /// <returns></returns>
+        public async Task SetProductAction(string productId, ProductAction productAction, ProductType productType)
+
         {
-            throw new NotImplementedException();
+            List<ProductOnClientResult> productOnClientResults = await GetProductAsync(productId);
+
+            // If the object doesn't exist for this client. Create it
+            if (!productOnClientResults.Any())
+            {
+                await CreateProductAsync(productId, productType);
+
+                // Update the product result
+                productOnClientResults = await GetProductAsync(productId);
+            }
+
+            ProductOnClientResult productOnClientResult = productOnClientResults.First();
+            productOnClientResult.ActionRequest = productAction.ToOpsiName();
+
+            await OpsiClient.ExecuteAsync<string>(new Request(GetFullMethodName("updateObject"), productOnClientResult.ToJson()));
         }
     }
 }
