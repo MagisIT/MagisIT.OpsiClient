@@ -3,9 +3,11 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
 using OpsiClientSharp.Exceptions;
 using OpsiClientSharp.Models;
 using OpsiClientSharp.Utils;
@@ -50,7 +52,7 @@ namespace OpsiClientSharp
 
             // Create http Client
             _httpClient = new HttpClient(httpClientHandler) {
-                Timeout = TimeSpan.FromSeconds(10)
+                Timeout = System.Threading.Timeout.InfiniteTimeSpan
             };
 
             // Set Basic Auth header
@@ -60,32 +62,43 @@ namespace OpsiClientSharp
         /// <summary>
         /// Sends a request to the Opsi server
         /// </summary>
-        /// <param name="jsonData">The json data of the json-rpc request</param>
+        /// <param name="request">The request object for the json rpc call</param>
+        /// <param name="timeout">The time before the request ist canceled</param>
         /// <returns></returns>
-        public async Task<TResult<T>> ExecuteAsync<T>(string jsonData) where T : Result
+        public async Task<T> ExecuteAsync<T>(Request request, int timeout = 10)
         {
-            if (jsonData == null)
-                throw new ArgumentNullException(nameof(jsonData));
+            var cancellationSource = new CancellationTokenSource();
+            cancellationSource.CancelAfter(TimeSpan.FromSeconds(timeout));
+
+            if (request == null)
+                throw new ArgumentNullException(nameof(request));
+
+            // Serialize Request object
+            string jsonRequest = request.ToJson();
+
+            Console.WriteLine(jsonRequest);
 
             // Send json-rpc request
-            HttpResponseMessage response = await _httpClient.PostAsync(OpsiServerRpcEndpoint, new StringContent(jsonData, Encoding.UTF8, "application/json"))
+            HttpResponseMessage response = await _httpClient
+                .PostAsync(OpsiServerRpcEndpoint, new StringContent(jsonRequest, Encoding.UTF8, "application/json"), cancellationSource.Token)
                 .ConfigureAwait(false);
 
             // Read the response
             string content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
+            Console.WriteLine(content);
             // Check if the response is valid
             if (response.StatusCode != HttpStatusCode.OK)
                 throw new OpsiClientRequestException($"Server returns an error: {response.StatusCode}. Message: {content}");
 
-            // Parse content to Json
-            var commandResponse = JsonConvert.DeserializeObject<TResult<T>>(content, new JsonSettings());
-
+            // Parse JSON by using the ResultParser of the Result
+            var result = JsonConvert.DeserializeObject<Result<T>>(content, new JsonSettings());
+            
             // Is there an OPSI server error?
-            if (commandResponse.Error != null)
-                throw new OpsiClientRequestException($"Server returns an error: {commandResponse.Error.Message}.");
+            if (result.Error != null)
+                throw new OpsiClientRequestException($"Server returns an error: {result.Error.Message}.");
 
-            return commandResponse;
+            return result.Data;
         }
     }
 }
