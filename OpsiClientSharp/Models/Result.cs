@@ -1,7 +1,6 @@
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 
-namespace OpsiClientSharp.Utils
+namespace OpsiClientSharp.Models
 {
     public class Result<TData>
     {

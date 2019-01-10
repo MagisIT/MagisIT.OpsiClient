@@ -1,9 +1,8 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 
-namespace OpsiClientSharp.Utils
+namespace OpsiClientSharp.Models
 {
     /// <summary>
     /// Base class for an opsi rpc request
@@ -24,17 +23,17 @@ namespace OpsiClientSharp.Utils
         /// <summary>
         /// The parameters the requests uses per definition
         /// </summary>
-        public List<string> Params { get; } = new List<string>();
+        public List<object> Params { get; } = new List<object>();
 
         /// <summary>
         /// Only shows the defined attributes in the result
         /// </summary>
-        public List<String> Attributes { get; } = new List<string>();
+        public List<string> Attributes { get; } = new List<string>();
 
         /// <summary>
         /// Only shows the results with the following filter
         /// </summary>
-        public Dictionary<string, string> Filter { get; } = new Dictionary<string, string>();
+        public RequestFilter RequestFilter { get; } = new RequestFilter();
 
 
         /// <summary>
@@ -48,14 +47,14 @@ namespace OpsiClientSharp.Utils
             Id = _id++;
         }
 
-        public Request(string method, params string[] methodParams) : this(method)
+        public Request(string method, params object[] methodParams) : this(method)
         {
-            Params = new List<string>(methodParams);
+            Params = new List<object>(methodParams);
         }
 
-        public Request(string method, Dictionary<string, string> filter, params string[] methodParams) : this(method, methodParams)
+        public Request(string method, RequestFilter requestFilter, params object[] methodParams) : this(method, methodParams)
         {
-            Filter = filter;
+            RequestFilter = requestFilter;
         }
 
         /// <summary>
@@ -73,13 +72,15 @@ namespace OpsiClientSharp.Utils
             if (Attributes.Any())
                 parameters.Add(Attributes);
 
-            if (Filter.Any())
+            // Get JSON from filter
+
+            if (RequestFilter.HasElements())
             {
                 // We need to add an empty attributes array if there are no attributes so that the filter parameter is respected
                 if (!Attributes.Any())
                     parameters.Add(new JArray());
 
-                parameters.Add(JObject.FromObject(Filter));
+                parameters.Add(RequestFilter.ToJson());
             }
 
             JObject request = new JObject(

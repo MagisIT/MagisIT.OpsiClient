@@ -6,9 +6,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Serialization;
 using OpsiClientSharp.Exceptions;
+using OpsiClientSharp.Models;
 using OpsiClientSharp.Utils;
 
 namespace OpsiClientSharp
@@ -51,7 +50,7 @@ namespace OpsiClientSharp
 
             // Create http Client
             _httpClient = new HttpClient(httpClientHandler) {
-                Timeout = System.Threading.Timeout.InfiniteTimeSpan
+                Timeout = Timeout.InfiniteTimeSpan
             };
 
             // Set Basic Auth header
@@ -92,7 +91,7 @@ namespace OpsiClientSharp
 
             // Parse JSON by using the ResultParser of the Result
             var result = JsonConvert.DeserializeObject<Result<T>>(content, new JsonSettings());
-            
+
             // Is there an OPSI server error?
             if (result.Error != null)
                 throw new OpsiClientRequestException($"Server returns an error: {result.Error.Message}.");

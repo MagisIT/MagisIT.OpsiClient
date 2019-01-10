@@ -1,10 +1,10 @@
 using System.Threading.Tasks;
+using OpsiClientSharp.Models;
 using OpsiClientSharp.Models.Results;
-using OpsiClientSharp.Utils;
 
 namespace OpsiClientSharp.RpcInterfaces
 {
-    public class BackendInterface : RpcInterface
+    public class BackendInterface : RpcInterface<BackendInfo>
     {
         /// <summary>
         /// The prefix of this interface
@@ -17,9 +17,9 @@ namespace OpsiClientSharp.RpcInterfaces
         /// <summary>
         /// Retrieve general opsi information of the backend
         /// </summary>
-        public async Task<BackendInfoResult> InfoAsync()
+        public async Task<BackendInfo> InfoAsync()
         {
-            return await OpsiClient.ExecuteAsync<BackendInfoResult>(new Request(GetFullMethodName("info")));
+            return await OpsiClient.ExecuteAsync<BackendInfo>(new Request(GetFullMethodName("info")));
         }
     }
 }

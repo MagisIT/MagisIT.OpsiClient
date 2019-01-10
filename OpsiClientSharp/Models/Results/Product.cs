@@ -3,7 +3,7 @@ using OpsiClientSharp.Utils;
 
 namespace OpsiClientSharp.Models.Results
 {
-    public class ProductObjectResult : JsonSerializable
+    public class Product : JsonSerializable
     {
         public string OnceScript { get; set; }
         public string Ident { get; set; }

@@ -1,10 +1,9 @@
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using OpsiClientSharp.Utils;
+using OpsiClientSharp.Models;
 
 namespace OpsiClientSharp.RpcInterfaces
 {
-    public class DepotInterface : RpcInterface
+    public class DepotInterface : RpcInterface<DepotInterface>
     {
         public override string InterfaceName => "depot";
 

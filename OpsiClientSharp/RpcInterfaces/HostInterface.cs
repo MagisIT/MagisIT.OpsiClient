@@ -1,11 +1,10 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using OpsiClientSharp.Models.Results;
-using OpsiClientSharp.Utils;
 
 namespace OpsiClientSharp.RpcInterfaces
 {
-    public class HostInterface : RpcInterface
+    public class HostInterface : RpcInterface<Host>
     {
         public override string InterfaceName => "host";
 
@@ -15,11 +14,9 @@ namespace OpsiClientSharp.RpcInterfaces
         /// Retrieves all registered clients
         /// </summary>
         /// <returns></returns>
-        public Task<List<ClientObjectResult>> GetClientsAsync()
+        public Task<List<Host>> GetClientsAsync()
         {
-            return OpsiClient.ExecuteAsync<List<ClientObjectResult>>(
-                new Request(GetFullMethodName("getObjects"), new Dictionary<string, string> {{"type", "OpsiClient"}})
-            );
+            return GetAllAsync(new RequestFilter().Add("type", "OpsiClient"));
         }
     }
 }

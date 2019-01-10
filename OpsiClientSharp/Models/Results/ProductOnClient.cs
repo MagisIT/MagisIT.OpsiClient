@@ -2,7 +2,7 @@ using OpsiClientSharp.Utils;
 
 namespace OpsiClientSharp.Models.Results
 {
-    public class ProductOnClientResult : JsonSerializable
+    public class ProductOnClient : JsonSerializable
     {
         public string Ident { get; set; }
         public string ActionProgress { get; set; }

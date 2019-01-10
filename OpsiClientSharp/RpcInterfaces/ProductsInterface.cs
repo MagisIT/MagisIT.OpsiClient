@@ -1,40 +1,24 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using OpsiClientSharp.Exceptions;
 using OpsiClientSharp.Models.Results;
-using OpsiClientSharp.Utils;
 using OpsiClientSharp.Types;
 
 namespace OpsiClientSharp.RpcInterfaces
 {
-    public class ProductsInterface : RpcInterface
+    public class ProductsInterface : RpcInterface<Product>
     {
         public override string InterfaceName => "product";
 
         public ProductsInterface(OpsiClient opsiClient) : base(opsiClient) { }
 
         /// <summary>
-        /// Returns all products on this opsi server
-        /// </summary>
-        /// <returns></returns>
-        public Task<List<ProductObjectResult>> GetAllAsync()
-        {
-            return OpsiClient.ExecuteAsync<List<ProductObjectResult>>(new Request(GetFullMethodName("getObjects")));
-        }
-
-        /// <summary>
         /// Returns all products on this opsi server depending on the product type
         /// </summary>
         /// <param name="productType">Which product type should be returned</param>
         /// <returns></returns>
-        public Task<List<ProductObjectResult>> GetAllAsync(ProductType productType)
+        public Task<List<Product>> GetAllAsync(ProductType productType)
         {
-            return OpsiClient.ExecuteAsync<List<ProductObjectResult>>(
-                new Request(GetFullMethodName("getObjects"), new Dictionary<string, string> {
-                    {"type", productType.ToOpsiName()}
-                })
-            );
+            return base.GetAllAsync(new RequestFilter().Add("type", productType.ToOpsiName()));
         }
 
         /// <summary>
@@ -42,13 +26,9 @@ namespace OpsiClientSharp.RpcInterfaces
         /// </summary>
         /// <param name="productId">The id of the product which should be returned</param>
         /// <returns></returns>
-        public Task<List<ProductObjectResult>> GetAsync(string productId)
+        public Task<Product> GetAsync(string productId)
         {
-            return OpsiClient.ExecuteAsync<List<ProductObjectResult>>(
-                new Request(GetFullMethodName("getObjects"), new Dictionary<string, string> {
-                    {"id", productId}
-                })
-            );
+            return base.GetAsync(new RequestFilter().Add("id", productId));
         }
 
         /// <summary>
@@ -56,11 +36,9 @@ namespace OpsiClientSharp.RpcInterfaces
         /// </summary>
         /// <param name="productId">The product id which should be checked</param>
         /// <returns></returns>
-        public async Task<bool> ExistsAsync(string productId)
+        public Task<bool> ExistsAsync(string productId)
         {
-            List<ProductObjectResult> products = await GetAsync(productId);
-
-            return products.Any();
+            return base.ExistsAsync(new RequestFilter().Add("id", productId));
         }
     }
 }
