@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
@@ -15,7 +16,7 @@ namespace OpsiClientSharp.Models
         /// Each request needs a unique request id
         /// Must start at 1
         /// </summary>
-        private static int _id = 1;
+        private static int _nextId = 1;
 
         /// <summary>
         /// The method name of the request
@@ -46,7 +47,7 @@ namespace OpsiClientSharp.Models
         public Request(string method)
         {
             Method = method;
-            Id = _id++;
+            Id = _nextId++;
         }
 
         /// <summary>
@@ -56,6 +57,9 @@ namespace OpsiClientSharp.Models
         /// <returns></returns>
         public Request AddAttribute(string attribute)
         {
+            if (attribute == null)
+                throw new ArgumentNullException(nameof(attribute));
+
             Attributes.Add(attribute);
             return this;
         }
@@ -67,6 +71,9 @@ namespace OpsiClientSharp.Models
         /// <returns></returns>
         public Request AddAttributes(IEnumerable<string> attributes)
         {
+            if (attributes == null)
+                throw new ArgumentNullException(nameof(attributes));
+
             Attributes.AddRange(attributes);
             return this;
         }
@@ -78,7 +85,7 @@ namespace OpsiClientSharp.Models
         /// <returns></returns>
         public Request Filter(RequestFilter requestFilter)
         {
-            RequestFilter = requestFilter;
+            RequestFilter = requestFilter ?? throw new ArgumentNullException(nameof(requestFilter));
             return this;
         }
 
@@ -89,6 +96,9 @@ namespace OpsiClientSharp.Models
         /// <returns></returns>
         public Request AddParameter(string param)
         {
+            if (param == null)
+                throw new ArgumentNullException(nameof(param));
+
             Params.Add(param);
             return this;
         }
@@ -100,6 +110,9 @@ namespace OpsiClientSharp.Models
         /// <returns></returns>
         public Request AddParameter(JArray jArray)
         {
+            if (jArray == null)
+                throw new ArgumentNullException(nameof(jArray));
+
             Params.Add(jArray);
             return this;
         }
@@ -111,6 +124,9 @@ namespace OpsiClientSharp.Models
         /// <returns></returns>
         public Request AddParameter(JObject jObject)
         {
+            if (jObject == null)
+                throw new ArgumentNullException(nameof(jObject));
+
             Params.Add(jObject);
             return this;
         }
@@ -122,6 +138,9 @@ namespace OpsiClientSharp.Models
         /// <returns></returns>
         public Request AddParameter(JsonSerializable jsonSerializable)
         {
+            if (jsonSerializable == null)
+                throw new ArgumentNullException(nameof(jsonSerializable));
+
             Params.Add(jsonSerializable.ToJsonObject());
             return this;
         }
@@ -133,6 +152,9 @@ namespace OpsiClientSharp.Models
         /// <returns></returns>
         public Request AddParameters(IEnumerable<string> parameters)
         {
+            if (parameters == null)
+                throw new ArgumentNullException(nameof(parameters));
+
             Params.AddRange(parameters);
             return this;
         }
@@ -147,6 +169,9 @@ namespace OpsiClientSharp.Models
         /// <returns></returns>
         public Request AddParameters(IEnumerable<JsonSerializable> jsonSerializables)
         {
+            if (jsonSerializables == null)
+                throw new ArgumentNullException(nameof(jsonSerializables));
+
             Params.Add(jsonSerializables.Select(serializable => serializable.ToJsonObject()));
             return this;
         }
@@ -158,6 +183,9 @@ namespace OpsiClientSharp.Models
         /// <returns></returns>
         public Request AddParameters(params string[] parameters)
         {
+            if (parameters == null)
+                throw new ArgumentNullException(nameof(parameters));
+
             Params.AddRange(parameters);
             return this;
         }
@@ -170,6 +198,9 @@ namespace OpsiClientSharp.Models
         /// <returns></returns>
         public Request AddParametersAsJArray(IEnumerable<JsonSerializable> jsonSerializables)
         {
+            if (jsonSerializables == null)
+                throw new ArgumentNullException(nameof(jsonSerializables));
+
             // We need to wrap the json objects into an array, because OPSI expects the first parameter to be an array or only one json object
             Params.Add(JArray.FromObject(jsonSerializables.Select(jsonSerializable => jsonSerializable.ToJsonObject())));
             return this;
@@ -182,6 +213,9 @@ namespace OpsiClientSharp.Models
         /// <returns></returns>
         public Request AddRawJsonParameter(string json)
         {
+            if (json == null)
+                throw new ArgumentNullException(nameof(json));
+
             Params.Add(JToken.FromObject(json));
             return this;
         }

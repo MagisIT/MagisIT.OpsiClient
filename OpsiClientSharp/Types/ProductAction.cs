@@ -1,3 +1,5 @@
+using System;
+
 namespace OpsiClientSharp.Types
 {
     public enum ProductAction
@@ -18,7 +20,7 @@ namespace OpsiClientSharp.Types
                     return "none";
             }
 
-            return null;
+            throw new ArgumentException($"{productAction} is not a valid product type");
         }
     }
 }

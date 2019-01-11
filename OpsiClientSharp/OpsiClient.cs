@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
+using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -50,7 +52,7 @@ namespace OpsiClientSharp
 
             // Create http Client
             _httpClient = new HttpClient(httpClientHandler) {
-                Timeout = Timeout.InfiniteTimeSpan
+                Timeout = TimeSpan.FromSeconds(10)
             };
 
             // Set Basic Auth header
@@ -65,38 +67,59 @@ namespace OpsiClientSharp
         /// <returns></returns>
         public async Task<T> ExecuteAsync<T>(Request request, int timeout = 10)
         {
-            var cancellationSource = new CancellationTokenSource();
-            cancellationSource.CancelAfter(TimeSpan.FromSeconds(timeout));
-
             if (request == null)
                 throw new ArgumentNullException(nameof(request));
 
-            // Serialize Request object
-            string jsonRequest = request.ToJson();
+            using (var cancellationSource = new CancellationTokenSource())
+            {
+                cancellationSource.CancelAfter(TimeSpan.FromSeconds(timeout));
 
-            Console.WriteLine(jsonRequest);
+                // Serialize Request object
+                string jsonRequest = request.ToJson();
 
-            // Send json-rpc request
-            HttpResponseMessage response = await _httpClient
-                .PostAsync(OpsiServerRpcEndpoint, new StringContent(jsonRequest, Encoding.UTF8, "application/json"), cancellationSource.Token)
-                .ConfigureAwait(false);
+                Debug.WriteLine($"RPC-Request: {jsonRequest}");
 
-            // Read the response
-            string content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                // Send json-rpc request
+                HttpResponseMessage response = await _httpClient
+                    .PostAsync(OpsiServerRpcEndpoint, new StringContent(jsonRequest, Encoding.UTF8, "application/json"), cancellationSource.Token)
+                    .ConfigureAwait(false);
 
-            Console.WriteLine(content);
-            // Check if the response is valid
-            if (response.StatusCode != HttpStatusCode.OK)
-                throw new OpsiClientRequestException($"Server returns an error: {response.StatusCode}. Message: {content}");
+                // Read the response
+                string content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
-            // Parse JSON by using the ResultParser of the Result
-            var result = JsonConvert.DeserializeObject<Result<T>>(content, new JsonSettings());
+                Debug.WriteLine($"RPC-Response: {content}");
 
-            // Is there an OPSI server error?
-            if (result.Error != null)
-                throw new OpsiClientRequestException($"Server returns an error: {result.Error.Message}.");
+                // Check if the response is valid
+                if (response.StatusCode != HttpStatusCode.OK)
+                    throw new OpsiClientRequestException($"Server returns an error: {response.StatusCode}. Message: {content}");
 
-            return result.Data;
+                // Parse JSON by using the ResultParser of the Result
+                var result = JsonConvert.DeserializeObject<Result<T>>(content, new JsonSettings());
+
+                // Is there an OPSI server error?
+                if (result.Error != null)
+                    throw new OpsiClientRequestException($"Server returns an error: {result.Error.Message}.");
+
+                return result.Data;
+            }
+        }
+
+        /// <summary>
+        /// Uploads a stream to the specified webdav server
+        /// </summary>
+        /// <param name="webdavServerUrl"></param>
+        /// <param name="pathOnServer"></param>
+        /// <param name="filename"></param>
+        /// <param name="streamToUpload"></param>
+        /// <returns></returns>
+        /// <exception cref="OpsiPackageUploadException"></exception>
+        public async Task UploadAsync(string webdavServerUrl, string pathOnServer, string filename, Stream streamToUpload)
+        {
+            HttpResponseMessage httpResponseMessage =
+                await _httpClient.PutAsync($"{webdavServerUrl}/{pathOnServer}/{filename}", new StreamContent(streamToUpload)).ConfigureAwait(false);
+
+            if (httpResponseMessage.StatusCode != HttpStatusCode.Created)
+                throw new OpsiPackageUploadException($"Server returns error {httpResponseMessage.StatusCode}");
         }
     }
 }

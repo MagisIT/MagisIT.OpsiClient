@@ -1,3 +1,5 @@
+using System;
+
 namespace OpsiClientSharp.Types
 {
     public enum ProductType
@@ -18,7 +20,7 @@ namespace OpsiClientSharp.Types
                     return "LocalbootProduct";
             }
 
-            return null;
+            throw new ArgumentException($"{productType} is not a valid product type");
         }
     }
 }

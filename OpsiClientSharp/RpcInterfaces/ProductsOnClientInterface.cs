@@ -76,7 +76,7 @@ namespace OpsiClientSharp.RpcInterfaces
         /// <returns></returns>
         public Task SetProductAction(Product product, ProductAction productAction)
         {
-            return SetProductsAction(new List<Product>{product}, productAction);
+            return SetProductsAction(new List<Product> {product}, productAction);
         }
 
         public async Task SetProductsAction(List<Product> products, ProductAction productAction)
