@@ -9,7 +9,7 @@ namespace OpsiClientSharp
         private readonly Dictionary<string, string> _filterDictionary = new Dictionary<string, string>();
 
         /// <summary>
-        ///     Adds an key value pair to the filter
+        ///     Adds a key value pair to the filter
         /// </summary>
         /// <param name="key"></param>
         /// <param name="value"></param>

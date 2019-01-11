@@ -65,7 +65,7 @@ namespace OpsiClientSharp
         /// <param name="request">The request object for the json rpc call</param>
         /// <param name="timeout">The time before the request ist canceled</param>
         /// <returns></returns>
-        public async Task<T> ExecuteAsync<T>(Request request, int timeout = 10)
+        public async Task<TResponseData> ExecuteAsync<TResponseData>(Request request, int timeout = 10)
         {
             if (request == null)
                 throw new ArgumentNullException(nameof(request));
@@ -94,7 +94,7 @@ namespace OpsiClientSharp
                     throw new OpsiClientRequestException($"Server returns an error: {response.StatusCode}. Message: {content}");
 
                 // Parse JSON by using the ResultParser of the Result
-                var result = JsonConvert.DeserializeObject<Result<T>>(content, new JsonSettings());
+                var result = JsonConvert.DeserializeObject<Result<TResponseData>>(content, new JsonSettings());
 
                 // Is there an OPSI server error?
                 if (result.Error != null)

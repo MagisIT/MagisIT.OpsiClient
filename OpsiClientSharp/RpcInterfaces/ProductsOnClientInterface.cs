@@ -66,7 +66,7 @@ namespace OpsiClientSharp.RpcInterfaces
             List<ProductOnClient> productsOnClient = await GetAllAsync();
 
             // Get all products that aren't already created for this client
-            List<Product> notCreatedProducts = products.Where((product) => productsOnClient.All(productOnClient => productOnClient.ProductId != product.Id)).ToList();
+            List<Product> notCreatedProducts = products.Where(product => productsOnClient.All(productOnClient => productOnClient.ProductId != product.Id)).ToList();
 
             // Create objects if any need to be created
             foreach (Product product in notCreatedProducts)
@@ -77,10 +77,10 @@ namespace OpsiClientSharp.RpcInterfaces
                 productsOnClient = await GetAllAsync();
 
             // Get all Products On Client that should be applied
-            productsOnClient = productsOnClient.Where((productOnClient) => products.Any((product) => product.Id == productOnClient.ProductId)).ToList();
+            productsOnClient = productsOnClient.Where(productOnClient => products.Any(product => product.Id == productOnClient.ProductId)).ToList();
 
             // Set Action for all products
-            productsOnClient.ForEach((productOnClient) => productOnClient.ActionRequest = productAction.ToOpsiName());
+            productsOnClient.ForEach(productOnClient => productOnClient.ActionRequest = productAction.ToOpsiName());
 
             await OpsiClient.ExecuteAsync<List<string>>(new Request(GetFullMethodName("updateObjects")).AddParametersAsJArray(productsOnClient));
         }
