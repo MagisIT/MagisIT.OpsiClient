@@ -1,46 +1,45 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using OpsiClientSharp.Utils;
 
 namespace OpsiClientSharp.Models
 {
     /// <summary>
-    /// Base class for an opsi rpc request
+    ///     Base class for an opsi rpc request
     /// </summary>
     public class Request
     {
         /// <summary>
-        /// Each request needs a unique request id
-        /// Must start at 1
+        ///     Each request needs a unique request id
+        ///     Must start at 1
         /// </summary>
         private static int _nextId = 1;
 
         /// <summary>
-        /// The method name of the request
+        ///     The method name of the request
         /// </summary>
         public string Method { get; }
 
         /// <summary>
-        /// The parameters the requests uses per definition
+        ///     The parameters the requests uses per definition
         /// </summary>
         public List<object> Params { get; } = new List<object>();
 
         /// <summary>
-        /// Only shows the defined attributes in the result
+        ///     Only shows the defined attributes in the result
         /// </summary>
         public List<string> Attributes { get; } = new List<string>();
 
         /// <summary>
-        /// Only shows the results with the following filter
+        ///     Only shows the results with the following filter
         /// </summary>
         public RequestFilter RequestFilter { get; private set; } = new RequestFilter();
 
 
         /// <summary>
-        /// The unique id for this request
+        ///     The unique id for this request
         /// </summary>
         public int Id { get; }
 
@@ -51,7 +50,7 @@ namespace OpsiClientSharp.Models
         }
 
         /// <summary>
-        /// Adds an attribute to the attribute filter
+        ///     Adds an attribute to the attribute filter
         /// </summary>
         /// <param name="attribute"></param>
         /// <returns></returns>
@@ -65,7 +64,7 @@ namespace OpsiClientSharp.Models
         }
 
         /// <summary>
-        /// Adds a list of attributes to the attribute filter
+        ///     Adds a list of attributes to the attribute filter
         /// </summary>
         /// <param name="attributes"></param>
         /// <returns></returns>
@@ -79,7 +78,7 @@ namespace OpsiClientSharp.Models
         }
 
         /// <summary>
-        /// Filters the output based on the request filter
+        ///     Filters the output based on the request filter
         /// </summary>
         /// <param name="requestFilter"></param>
         /// <returns></returns>
@@ -90,7 +89,7 @@ namespace OpsiClientSharp.Models
         }
 
         /// <summary>
-        /// Adds a string parameter to the request
+        ///     Adds a string parameter to the request
         /// </summary>
         /// <param name="param"></param>
         /// <returns></returns>
@@ -104,7 +103,7 @@ namespace OpsiClientSharp.Models
         }
 
         /// <summary>
-        /// Adds a parameter containing a json array to the request
+        ///     Adds a parameter containing a json array to the request
         /// </summary>
         /// <param name="jArray"></param>
         /// <returns></returns>
@@ -118,7 +117,7 @@ namespace OpsiClientSharp.Models
         }
 
         /// <summary>
-        /// Adds a parameter containing a json object to the request
+        ///     Adds a parameter containing a json object to the request
         /// </summary>
         /// <param name="jObject"></param>
         /// <returns></returns>
@@ -132,7 +131,7 @@ namespace OpsiClientSharp.Models
         }
 
         /// <summary>
-        /// Adds a json serializable object to the parameters
+        ///     Adds a json serializable object to the parameters
         /// </summary>
         /// <param name="jsonSerializable"></param>
         /// <returns></returns>
@@ -146,7 +145,7 @@ namespace OpsiClientSharp.Models
         }
 
         /// <summary>
-        /// Adds multiple string parameters to this request
+        ///     Adds multiple string parameters to this request
         /// </summary>
         /// <param name="parameters"></param>
         /// <returns></returns>
@@ -160,10 +159,10 @@ namespace OpsiClientSharp.Models
         }
 
         /// <summary>
-        /// Adds a list of json serializables to the request
-        /// This adds every json object as one argument of the rpc method
-        /// If you need these objects as an array which will be interpreted as only one argument use
-        /// <see cref="AddParametersAsJArray"/> instead
+        ///     Adds a list of json serializables to the request
+        ///     This adds every json object as one argument of the rpc method
+        ///     If you need these objects as an array which will be interpreted as only one argument use
+        ///     <see cref="AddParametersAsJArray" /> instead
         /// </summary>
         /// <param name="jsonSerializables"></param>
         /// <returns></returns>
@@ -177,7 +176,7 @@ namespace OpsiClientSharp.Models
         }
 
         /// <summary>
-        /// Adds an array or variable string parameters to this request
+        ///     Adds an array or variable string parameters to this request
         /// </summary>
         /// <param name="parameters"></param>
         /// <returns></returns>
@@ -191,8 +190,8 @@ namespace OpsiClientSharp.Models
         }
 
         /// <summary>
-        /// Adds a list of json serializable objects to the parameters
-        /// Wrapps all json serializables into one single array so that the rpc interface interprets this as one argument
+        ///     Adds a list of json serializable objects to the parameters
+        ///     Wrapps all json serializables into one single array so that the rpc interface interprets this as one argument
         /// </summary>
         /// <param name="jsonSerializables"></param>
         /// <returns></returns>
@@ -207,7 +206,7 @@ namespace OpsiClientSharp.Models
         }
 
         /// <summary>
-        /// Adds a json parameter without escaping the string when adding to the request
+        ///     Adds a json parameter without escaping the string when adding to the request
         /// </summary>
         /// <param name="json"></param>
         /// <returns></returns>
@@ -221,14 +220,14 @@ namespace OpsiClientSharp.Models
         }
 
         /// <summary>
-        /// Returns the json of this request
-        /// We need to build it manually because it needs a specific structure
-        /// TODO: Maybe there's a better way?
+        ///     Returns the json of this request
+        ///     We need to build it manually because it needs a specific structure
+        ///     TODO: Maybe there's a better way?
         /// </summary>
         /// <returns></returns>
         public string ToJson()
         {
-            JArray parameters = new JArray();
+            var parameters = new JArray();
             parameters.Add(Params);
 
             // Add attributes if any exist
@@ -246,10 +245,7 @@ namespace OpsiClientSharp.Models
                 parameters.Add(RequestFilter.ToJson());
             }
 
-            JObject request = new JObject(
-                new JProperty("method", Method),
-                new JProperty("params", parameters),
-                new JProperty("id", Id));
+            var request = new JObject(new JProperty("method", Method), new JProperty("params", parameters), new JProperty("id", Id));
 
             return request.ToString();
         }

@@ -9,7 +9,7 @@ namespace OpsiClientSharp
         private readonly Dictionary<string, string> _filterDictionary = new Dictionary<string, string>();
 
         /// <summary>
-        /// Adds an key value pair to the filter
+        ///     Adds an key value pair to the filter
         /// </summary>
         /// <param name="key"></param>
         /// <param name="value"></param>
@@ -21,21 +21,15 @@ namespace OpsiClientSharp
         }
 
         /// <summary>
-        /// Does the filter contain any elements?
+        ///     Does the filter contain any elements?
         /// </summary>
         /// <returns></returns>
-        public bool HasElements()
-        {
-            return _filterDictionary.Any();
-        }
+        public bool HasElements() => _filterDictionary.Any();
 
         /// <summary>
-        /// Returns the json of the current filter
+        ///     Returns the json of the current filter
         /// </summary>
         /// <returns></returns>
-        public JObject ToJson()
-        {
-            return JObject.FromObject(_filterDictionary);
-        }
+        public JObject ToJson() => JObject.FromObject(_filterDictionary);
     }
 }

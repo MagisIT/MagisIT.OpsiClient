@@ -6,11 +6,10 @@ namespace OpsiClientSharp.Utils
 {
     public abstract class JsonSerializable
     {
-        public JObject ToJsonObject()
-        {
-            return JObject.FromObject(this, new JsonSerializer() {
-                ContractResolver = new CamelCasePropertyNamesContractResolver()
-            });
-        }
+        public JObject ToJsonObject() =>
+            JObject.FromObject(this,
+                               new JsonSerializer() {
+                                   ContractResolver = new CamelCasePropertyNamesContractResolver()
+                               });
     }
 }

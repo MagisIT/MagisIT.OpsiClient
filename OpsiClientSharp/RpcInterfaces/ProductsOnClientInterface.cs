@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
 using OpsiClientSharp.Exceptions;
 using OpsiClientSharp.Models;
 using OpsiClientSharp.Models.Results;
@@ -15,48 +14,33 @@ namespace OpsiClientSharp.RpcInterfaces
 
         public string ClientId { get; }
 
-        public ProductsOnClientInterface(OpsiClient opsiClient, string clientId) : base(opsiClient)
-        {
-            ClientId = clientId;
-        }
+        public ProductsOnClientInterface(OpsiClient opsiClient, string clientId) : base(opsiClient) => ClientId = clientId;
 
         /// <summary>
-        /// Returns all products for this client
+        ///     Returns all products for this client
         /// </summary>
         /// <returns></returns>
-        public override Task<List<ProductOnClient>> GetAllAsync()
-        {
-            return base.GetAllAsync(new RequestFilter().Add("clientId", ClientId));
-        }
+        public override Task<List<ProductOnClient>> GetAllAsync() => base.GetAllAsync(new RequestFilter().Add("clientId", ClientId));
 
         /// <summary>
-        /// Returns the product by the specified product id
+        ///     Returns the product by the specified product id
         /// </summary>
         /// <param name="productId">The product id of the product</param>
         /// <returns>The product result as list because the opsi response is a list too</returns>
-        public Task<ProductOnClient> GetAsync(string productId)
-        {
-            return base.GetAsync(new RequestFilter().Add("clientId", ClientId).Add("productId", productId));
-        }
+        public Task<ProductOnClient> GetAsync(string productId) => base.GetAsync(new RequestFilter().Add("clientId", ClientId).Add("productId", productId));
 
-        public Task<bool> ExistsAsync(string productId)
-        {
-            return ExistsAsync(new RequestFilter().Add("clientId", ClientId).Add("productId", productId));
-        }
+        public Task<bool> ExistsAsync(string productId) => ExistsAsync(new RequestFilter().Add("clientId", ClientId).Add("productId", productId));
 
         /// <summary>
-        /// Checks whether the product is already defined on the server for this client
+        ///     Checks whether the product is already defined on the server for this client
         /// </summary>
         /// <param name="product"></param>
         /// <returns></returns>
-        public async Task<bool> IsProductCreatedAsync(Product product)
-        {
-            return await GetAsync(product.Id) != null;
-        }
+        public async Task<bool> IsProductCreatedAsync(Product product) => await GetAsync(product.Id) != null;
 
         /// <summary>
-        /// Creates a new product for this client
-        /// Runs only if the product isn't already created for this client. Otherwise an exception will be thrown
+        ///     Creates a new product for this client
+        ///     Runs only if the product isn't already created for this client. Otherwise an exception will be thrown
         /// </summary>
         /// <returns></returns>
         public async Task CreateProductAsync(Product product)
@@ -69,15 +53,12 @@ namespace OpsiClientSharp.RpcInterfaces
         }
 
         /// <summary>
-        /// Sets a product action e.g for setup
+        ///     Sets a product action e.g for setup
         /// </summary>
         /// <param name="product"></param>
         /// <param name="productAction"></param>
         /// <returns></returns>
-        public Task SetProductAction(Product product, ProductAction productAction)
-        {
-            return SetProductsAction(new List<Product> {product}, productAction);
-        }
+        public Task SetProductAction(Product product, ProductAction productAction) => SetProductsAction(new List<Product> { product }, productAction);
 
         public async Task SetProductsAction(List<Product> products, ProductAction productAction)
         {
@@ -88,7 +69,7 @@ namespace OpsiClientSharp.RpcInterfaces
             List<Product> notCreatedProducts = products.Where((product) => productsOnClient.All(productOnClient => productOnClient.ProductId != product.Id)).ToList();
 
             // Create objects if any need to be created
-            foreach (var product in notCreatedProducts)
+            foreach (Product product in notCreatedProducts)
                 await CreateProductAsync(product);
 
             // Update productsOnClient only if there are new products for this client

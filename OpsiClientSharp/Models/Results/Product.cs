@@ -27,43 +27,25 @@ namespace OpsiClientSharp.Models.Results
         public string Id { get; set; }
         public bool LicenseRequired { get; set; }
 
-        public bool HasSetupScript()
-        {
-            return SetupScript != "";
-        }
+        public bool HasSetupScript() => SetupScript != "";
 
-        public bool HasCustomScript()
-        {
-            return CustomScript != "";
-        }
+        public bool HasCustomScript() => CustomScript != "";
 
-        public bool HasUninstallScript()
-        {
-            return UninstallScript != "";
-        }
+        public bool HasUninstallScript() => UninstallScript != "";
 
-        public bool HasUpdateScript()
-        {
-            return UpdateScript != "";
-        }
+        public bool HasUpdateScript() => UpdateScript != "";
 
-        public bool HasAlwaysScript()
-        {
-            return AlwaysScript != "";
-        }
+        public bool HasAlwaysScript() => AlwaysScript != "";
 
-        public bool HasOnceScript()
-        {
-            return OnceScript != "";
-        }
+        public bool HasOnceScript() => OnceScript != "";
 
         /// <summary>
-        /// Returns all available product actions for this product
+        ///     Returns all available product actions for this product
         /// </summary>
         /// <returns></returns>
         public List<ProductAction> GetAvailableProductActions()
         {
-            List<ProductAction> productActions = new List<ProductAction>();
+            var productActions = new List<ProductAction>();
 
             if (HasSetupScript())
                 productActions.Add(ProductAction.Setup);
