@@ -5,6 +5,11 @@ namespace OpsiClientSharp.Types
     public enum ProductAction
     {
         Setup,
+        Update,
+        Uninstall,
+        Always,
+        Once,
+        Custom,
         None
     }
 
@@ -16,6 +21,16 @@ namespace OpsiClientSharp.Types
             {
                 case ProductAction.Setup:
                     return "setup";
+                case ProductAction.Update:
+                    return "update";
+                case ProductAction.Uninstall:
+                    return "uninstall";
+                case ProductAction.Always:
+                    return "always";
+                case ProductAction.Once:
+                    return "once";
+                case ProductAction.Custom:
+                    return "custom";
                 case ProductAction.None:
                     return "none";
             }
