@@ -45,8 +45,8 @@ namespace OpsiClientSharp.RpcInterfaces
         ///     Returns one element specified by the request filter
         /// </summary>
         /// <param name="requestFilter"></param>
-        /// <returns>The element or null if the result was empty</returns>
-        public async Task<TResultObject> GetAsync(RequestFilter requestFilter) => (await GetAllAsync(requestFilter)).FirstOrDefault();
+        /// <returns>The requested element</returns>
+        public async Task<TResultObject> GetAsync(RequestFilter requestFilter) => (await GetAllAsync(requestFilter)).First();
 
         /// <summary>
         ///     Check whether any object with the specified filter exists
