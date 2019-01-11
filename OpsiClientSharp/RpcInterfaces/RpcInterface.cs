@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using OpsiClientSharp.Exceptions;
 using OpsiClientSharp.Models;
 
 namespace OpsiClientSharp.RpcInterfaces
@@ -32,7 +33,7 @@ namespace OpsiClientSharp.RpcInterfaces
         /// <returns></returns>
         public virtual Task<List<TResultObject>> GetAllAsync()
         {
-            return OpsiClient.ExecuteAsync<List<TResultObject>>(new Request(GetFullMethodName("getObjects")));
+            return GetAllAsync(new RequestFilter());
         }
 
         /// <summary>
@@ -40,9 +41,13 @@ namespace OpsiClientSharp.RpcInterfaces
         /// </summary>
         /// <param name="requestFilter"></param>
         /// <returns></returns>
-        public Task<List<TResultObject>> GetAllAsync(RequestFilter requestFilter)
+        public async Task<List<TResultObject>> GetAllAsync(RequestFilter requestFilter)
         {
-            return OpsiClient.ExecuteAsync<List<TResultObject>>(new Request(GetFullMethodName("getObjects")).Filter(requestFilter));
+            List<TResultObject> resultObjects = await GetAllAsyncInternal(requestFilter);
+            if (!resultObjects.Any())
+                throw new OpsiClientRequestException($"Cannot find objects on interface {InterfaceName} with request filter {requestFilter.ToJson()}");
+
+            return resultObjects;
         }
 
         /// <summary>
@@ -52,8 +57,7 @@ namespace OpsiClientSharp.RpcInterfaces
         /// <returns>The element or null if the result was empty</returns>
         public async Task<TResultObject> GetAsync(RequestFilter requestFilter)
         {
-            List<TResultObject> resultObjects = await OpsiClient.ExecuteAsync<List<TResultObject>>(new Request(GetFullMethodName("getObjects")).Filter(requestFilter));
-            return resultObjects.FirstOrDefault();
+            return (await GetAllAsync(requestFilter)).First();
         }
 
         /// <summary>
@@ -63,7 +67,12 @@ namespace OpsiClientSharp.RpcInterfaces
         /// <returns></returns>
         public async Task<bool> ExistsAsync(RequestFilter requestFilter)
         {
-            return await GetAsync(requestFilter) != null;
+            return (await GetAllAsyncInternal(requestFilter)).Any();
+        }
+
+        private Task<List<TResultObject>> GetAllAsyncInternal(RequestFilter requestFilter)
+        {
+            return OpsiClient.ExecuteAsync<List<TResultObject>>(new Request(GetFullMethodName("getObjects")).Filter(requestFilter));
         }
     }
 }
