@@ -74,18 +74,9 @@ namespace OpsiClientSharp.RpcInterfaces
         /// <param name="product"></param>
         /// <param name="productAction"></param>
         /// <returns></returns>
-        public async Task SetProductAction(Product product, ProductAction productAction)
+        public Task SetProductAction(Product product, ProductAction productAction)
         {
-            // If the object doesn't exist for this client. Create it
-            if (!await ExistsAsync(product.Id))
-            {
-                await CreateProductAsync(product);
-            }
-
-            ProductOnClient productOnClient = await GetAsync(product.Id);
-            productOnClient.ActionRequest = productAction.ToOpsiName();
-
-            await OpsiClient.ExecuteAsync<string>(new Request(GetFullMethodName("updateObject")).AddParameter(productOnClient));
+            return SetProductsAction(new List<Product>{product}, productAction);
         }
 
         public async Task SetProductsAction(List<Product> products, ProductAction productAction)
