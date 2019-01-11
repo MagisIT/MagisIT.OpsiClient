@@ -42,7 +42,7 @@ namespace OpsiClientSharp.RpcInterfaces
         /// <returns></returns>
         public Task<List<TResultObject>> GetAllAsync(RequestFilter requestFilter)
         {
-            return OpsiClient.ExecuteAsync<List<TResultObject>>(new Request(GetFullMethodName("getObjects"), requestFilter));
+            return OpsiClient.ExecuteAsync<List<TResultObject>>(new Request(GetFullMethodName("getObjects")).Filter(requestFilter));
         }
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace OpsiClientSharp.RpcInterfaces
         /// <returns>The element or null if the result was empty</returns>
         public async Task<TResultObject> GetAsync(RequestFilter requestFilter)
         {
-            List<TResultObject> resultObjects = await OpsiClient.ExecuteAsync<List<TResultObject>>(new Request(GetFullMethodName("getObjects"), requestFilter));
+            List<TResultObject> resultObjects = await OpsiClient.ExecuteAsync<List<TResultObject>>(new Request(GetFullMethodName("getObjects")).Filter(requestFilter));
             return resultObjects.FirstOrDefault();
         }
 

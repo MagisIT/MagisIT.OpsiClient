@@ -65,7 +65,7 @@ namespace OpsiClientSharp.RpcInterfaces
                 throw new OpsiProductAlreadyExistsException($"The product {product.Id} is already defined for this client {ClientId}");
 
             // Create the product definition for this client
-            await OpsiClient.ExecuteAsync<List<string>>(new Request(GetFullMethodName("create"), product.Id, product.Type, ClientId));
+            await OpsiClient.ExecuteAsync<List<string>>(new Request(GetFullMethodName("create")).AddParameters(product.Id, product.Type, ClientId));
         }
 
         /// <summary>
@@ -85,7 +85,7 @@ namespace OpsiClientSharp.RpcInterfaces
             ProductOnClient productOnClient = await GetAsync(product.Id);
             productOnClient.ActionRequest = productAction.ToOpsiName();
 
-            await OpsiClient.ExecuteAsync<string>(new Request(GetFullMethodName("updateObject"), productOnClient.ToJson().ToString()));
+            await OpsiClient.ExecuteAsync<string>(new Request(GetFullMethodName("updateObject")).AddParameter(productOnClient));
         }
 
         public async Task SetProductsAction(List<Product> products, ProductAction productAction)
@@ -110,11 +110,7 @@ namespace OpsiClientSharp.RpcInterfaces
             // Set Action for all products
             productsOnClient.ForEach((productOnClient) => productOnClient.ActionRequest = productAction.ToOpsiName());
 
-            // TODO: is there a better method using LINQ?
-            List<JObject> productsOnClientArguments = new List<JObject>();
-            productsOnClient.ForEach((productOnClient) => productsOnClientArguments.Add(productOnClient.ToJson()));
-
-            await OpsiClient.ExecuteAsync<List<string>>(new Request(GetFullMethodName("updateObjects"), JArray.FromObject(productsOnClientArguments)));
+            await OpsiClient.ExecuteAsync<List<string>>(new Request(GetFullMethodName("updateObjects")).AddParametersAsJArray(productsOnClient));
         }
     }
 }

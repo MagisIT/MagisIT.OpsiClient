@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using OpsiClientSharp.Utils;
 
 namespace OpsiClientSharp.Models
 {
@@ -33,7 +35,7 @@ namespace OpsiClientSharp.Models
         /// <summary>
         /// Only shows the results with the following filter
         /// </summary>
-        public RequestFilter RequestFilter { get; } = new RequestFilter();
+        public RequestFilter RequestFilter { get; private set; } = new RequestFilter();
 
 
         /// <summary>
@@ -47,14 +49,141 @@ namespace OpsiClientSharp.Models
             Id = _id++;
         }
 
-        public Request(string method, params object[] methodParams) : this(method)
+        /// <summary>
+        /// Adds an attribute to the attribute filter
+        /// </summary>
+        /// <param name="attribute"></param>
+        /// <returns></returns>
+        public Request AddAttribute(string attribute)
         {
-            Params = new List<object>(methodParams);
+            Attributes.Add(attribute);
+            return this;
         }
 
-        public Request(string method, RequestFilter requestFilter, params object[] methodParams) : this(method, methodParams)
+        /// <summary>
+        /// Adds a list of attributes to the attribute filter
+        /// </summary>
+        /// <param name="attributes"></param>
+        /// <returns></returns>
+        public Request AddAttributes(IEnumerable<string> attributes)
+        {
+            Attributes.AddRange(attributes);
+            return this;
+        }
+
+        /// <summary>
+        /// Filters the output based on the request filter
+        /// </summary>
+        /// <param name="requestFilter"></param>
+        /// <returns></returns>
+        public Request Filter(RequestFilter requestFilter)
         {
             RequestFilter = requestFilter;
+            return this;
+        }
+
+        /// <summary>
+        /// Adds a string parameter to the request
+        /// </summary>
+        /// <param name="param"></param>
+        /// <returns></returns>
+        public Request AddParameter(string param)
+        {
+            Params.Add(param);
+            return this;
+        }
+
+        /// <summary>
+        /// Adds a parameter containing a json array to the request
+        /// </summary>
+        /// <param name="jArray"></param>
+        /// <returns></returns>
+        public Request AddParameter(JArray jArray)
+        {
+            Params.Add(jArray);
+            return this;
+        }
+
+        /// <summary>
+        /// Adds a parameter containing a json object to the request
+        /// </summary>
+        /// <param name="jObject"></param>
+        /// <returns></returns>
+        public Request AddParameter(JObject jObject)
+        {
+            Params.Add(jObject);
+            return this;
+        }
+
+        /// <summary>
+        /// Adds a json serializable object to the parameters
+        /// </summary>
+        /// <param name="jsonSerializable"></param>
+        /// <returns></returns>
+        public Request AddParameter(JsonSerializable jsonSerializable)
+        {
+            Params.Add(jsonSerializable.ToJsonObject());
+            return this;
+        }
+
+        /// <summary>
+        /// Adds multiple string parameters to this request
+        /// </summary>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        public Request AddParameters(IEnumerable<string> parameters)
+        {
+            Params.AddRange(parameters);
+            return this;
+        }
+
+        /// <summary>
+        /// Adds a list of json serializables to the request
+        /// This adds every json object as one argument of the rpc method
+        /// If you need these objects as an array which will be interpreted as only one argument use
+        /// <see cref="AddParametersAsJArray"/> instead
+        /// </summary>
+        /// <param name="jsonSerializables"></param>
+        /// <returns></returns>
+        public Request AddParameters(IEnumerable<JsonSerializable> jsonSerializables)
+        {
+            Params.Add(jsonSerializables.Select(serializable => serializable.ToJsonObject()));
+            return this;
+        }
+
+        /// <summary>
+        /// Adds an array or variable string parameters to this request
+        /// </summary>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        public Request AddParameters(params string[] parameters)
+        {
+            Params.AddRange(parameters);
+            return this;
+        }
+
+        /// <summary>
+        /// Adds a list of json serializable objects to the parameters
+        /// Wrapps all json serializables into one single array so that the rpc interface interprets this as one argument
+        /// </summary>
+        /// <param name="jsonSerializables"></param>
+        /// <returns></returns>
+        public Request AddParametersAsJArray(IEnumerable<JsonSerializable> jsonSerializables)
+        {
+            // We need to wrap the json objects into an array, because OPSI expects the first parameter to be an array or only one json object
+            Params.Add(JArray.FromObject(jsonSerializables.Select(jsonSerializable => jsonSerializable.ToJsonObject())));
+            return this;
+        }
+
+        /// <summary>
+        /// Adds a json parameter without escaping the string when adding to the request
+        /// </summary>
+        /// <param name="json"></param>
+        /// <returns></returns>
+        public Request AddRawJsonParameter(string json)
+        {
+            Params.Add(JToken.FromObject(json));
+            return this;
         }
 
         /// <summary>

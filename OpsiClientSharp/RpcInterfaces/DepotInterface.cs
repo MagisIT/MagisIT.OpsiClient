@@ -17,7 +17,7 @@ namespace OpsiClientSharp.RpcInterfaces
         public Task<string> GetMd5SumAsync(string absoluteFilePath)
         {
             return OpsiClient.ExecuteAsync<string>(
-                new Request(GetFullMethodName("getMD5Sum"), absoluteFilePath)
+                new Request(GetFullMethodName("getMD5Sum")).AddParameter(absoluteFilePath)
             );
         }
 
@@ -32,7 +32,7 @@ namespace OpsiClientSharp.RpcInterfaces
         public Task InstallPackageAsync(string absoluteFilePath, int timeout = 180)
         {
             return OpsiClient.ExecuteAsync<string>(
-                new Request(GetFullMethodName("installPackage"), absoluteFilePath),
+                new Request(GetFullMethodName("installPackage")).AddParameter(absoluteFilePath),
                 timeout
             );
         }
@@ -46,7 +46,7 @@ namespace OpsiClientSharp.RpcInterfaces
         public Task UninstallPackageAsync(string productId, int timeout = 180)
         {
             return OpsiClient.ExecuteAsync<string>(
-                new Request(GetFullMethodName("uninstallPackage"), productId)
+                new Request(GetFullMethodName("uninstallPackage")).AddParameter(productId)
             );
         }
     }
