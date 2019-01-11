@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.Serialization;
 
 namespace OpsiClientSharp.Exceptions
 {
@@ -7,5 +8,9 @@ namespace OpsiClientSharp.Exceptions
         public OpsiClientRequestException() { }
 
         public OpsiClientRequestException(string message) : base(message) { }
+
+        protected OpsiClientRequestException(SerializationInfo info, StreamingContext context) : base(info, context) { }
+
+        public OpsiClientRequestException(string message, Exception innerException) : base(message, innerException) { }
     }
 }

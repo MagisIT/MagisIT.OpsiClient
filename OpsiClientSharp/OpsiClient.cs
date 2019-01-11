@@ -15,19 +15,19 @@ using OpsiClientSharp.Utils;
 namespace OpsiClientSharp
 {
     /// <summary>
-    /// Opsi-Client class communicating with the OPSI server rpc endpoint
+    ///     Opsi-Client class communicating with the OPSI server rpc endpoint
     /// </summary>
     public class OpsiClient
     {
         private readonly CookieContainer _cookieContainer = new CookieContainer();
 
         /// <summary>
-        /// HTTP-Client handling the communication with the OPSI server
+        ///     HTTP-Client handling the communication with the OPSI server
         /// </summary>
         private readonly HttpClient _httpClient;
 
         /// <summary>
-        /// RPC endpoint of the Opsi server
+        ///     RPC endpoint of the Opsi server
         /// </summary>
         public string OpsiServerRpcEndpoint { get; }
 
@@ -42,7 +42,7 @@ namespace OpsiClientSharp
                 throw new ArgumentNullException(nameof(password));
 
             // Set cookie container
-            HttpClientHandler httpClientHandler = new HttpClientHandler {
+            var httpClientHandler = new HttpClientHandler {
                 CookieContainer = _cookieContainer
             };
 
@@ -60,12 +60,12 @@ namespace OpsiClientSharp
         }
 
         /// <summary>
-        /// Sends a request to the Opsi server
+        ///     Sends a request to the Opsi server
         /// </summary>
         /// <param name="request">The request object for the json rpc call</param>
         /// <param name="timeout">The time before the request ist canceled</param>
         /// <returns></returns>
-        public async Task<T> ExecuteAsync<T>(Request request, int timeout = 10)
+        public async Task<TResponseData> ExecuteAsync<TResponseData>(Request request, int timeout = 10)
         {
             if (request == null)
                 throw new ArgumentNullException(nameof(request));
@@ -81,8 +81,8 @@ namespace OpsiClientSharp
 
                 // Send json-rpc request
                 HttpResponseMessage response = await _httpClient
-                    .PostAsync(OpsiServerRpcEndpoint, new StringContent(jsonRequest, Encoding.UTF8, "application/json"), cancellationSource.Token)
-                    .ConfigureAwait(false);
+                                                     .PostAsync(OpsiServerRpcEndpoint, new StringContent(jsonRequest, Encoding.UTF8, "application/json"), cancellationSource.Token)
+                                                     .ConfigureAwait(false);
 
                 // Read the response
                 string content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -94,7 +94,7 @@ namespace OpsiClientSharp
                     throw new OpsiClientRequestException($"Server returns an error: {response.StatusCode}. Message: {content}");
 
                 // Parse JSON by using the ResultParser of the Result
-                var result = JsonConvert.DeserializeObject<Result<T>>(content, new JsonSettings());
+                var result = JsonConvert.DeserializeObject<Result<TResponseData>>(content, new JsonSettings());
 
                 // Is there an OPSI server error?
                 if (result.Error != null)
@@ -105,7 +105,7 @@ namespace OpsiClientSharp
         }
 
         /// <summary>
-        /// Uploads a stream to the specified webdav server
+        ///     Uploads a stream to the specified webdav server
         /// </summary>
         /// <param name="webdavServerUrl"></param>
         /// <param name="pathOnServer"></param>
