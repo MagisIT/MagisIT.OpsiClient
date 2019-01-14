@@ -15,9 +15,14 @@ namespace OpsiClientSharp.RpcInterfaces
 
         public string ClientId { get; }
 
-        public ProductsOnClientInterface(OpsiClient opsiClient, string clientId) : base(opsiClient)
+        internal ProductsOnClientInterface(OpsiHttpClient opsiHttpClient, string clientId) : base(opsiHttpClient)
         {
             ClientId = clientId;
+        }
+
+        internal ProductsOnClientInterface(OpsiHttpClient opsiHttpClient, Host host) : base(opsiHttpClient)
+        {
+            ClientId = host.Id;
         }
 
         /// <summary>
@@ -65,7 +70,7 @@ namespace OpsiClientSharp.RpcInterfaces
                 throw new OpsiProductAlreadyExistsException($"The product {product.Id} is already defined for this client {ClientId}");
 
             // Create the product definition for this client
-            await OpsiClient.ExecuteAsync<List<string>>(new Request(GetFullMethodName("create")).AddParameters(product.Id, product.Type, ClientId));
+            await OpsiHttpClient.ExecuteAsync<List<string>>(new Request(GetFullMethodName("create")).AddParameters(product.Id, product.Type, ClientId));
         }
 
         /// <summary>
@@ -101,7 +106,7 @@ namespace OpsiClientSharp.RpcInterfaces
             // Set Action for all products
             productsOnClient.ForEach((productOnClient) => productOnClient.ActionRequest = productAction.ToOpsiName());
 
-            await OpsiClient.ExecuteAsync<List<string>>(new Request(GetFullMethodName("updateObjects")).AddParametersAsJArray(productsOnClient));
+            await OpsiHttpClient.ExecuteAsync<List<string>>(new Request(GetFullMethodName("updateObjects")).AddParametersAsJArray(productsOnClient));
         }
     }
 }

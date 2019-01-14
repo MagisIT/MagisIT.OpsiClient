@@ -9,7 +9,7 @@ namespace OpsiClientSharp.RpcInterfaces
     {
         public override string InterfaceName => "product";
 
-        public ProductsInterface(OpsiClient opsiClient) : base(opsiClient) { }
+        internal ProductsInterface(OpsiHttpClient opsiHttpClient) : base(opsiHttpClient) { }
 
         /// <summary>
         /// Returns all products on this opsi server depending on the product type

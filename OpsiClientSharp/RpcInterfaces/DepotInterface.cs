@@ -7,7 +7,7 @@ namespace OpsiClientSharp.RpcInterfaces
     {
         public override string InterfaceName => "depot";
 
-        public DepotInterface(OpsiClient opsiClient) : base(opsiClient) { }
+        internal DepotInterface(OpsiHttpClient opsiHttpClient) : base(opsiHttpClient) { }
 
         /// <summary>
         /// Returns a md5 sum of a file in the depot
@@ -16,7 +16,7 @@ namespace OpsiClientSharp.RpcInterfaces
         /// <returns>The md5Sum of the file</returns>
         public Task<string> GetMd5SumAsync(string absoluteFilePath)
         {
-            return OpsiClient.ExecuteAsync<string>(
+            return OpsiHttpClient.ExecuteAsync<string>(
                 new Request(GetFullMethodName("getMD5Sum")).AddParameter(absoluteFilePath)
             );
         }
@@ -31,7 +31,7 @@ namespace OpsiClientSharp.RpcInterfaces
         /// <returns>Nothing if successful otherwise an exception</returns>
         public Task InstallPackageAsync(string absoluteFilePath, int timeout = 180)
         {
-            return OpsiClient.ExecuteAsync<string>(
+            return OpsiHttpClient.ExecuteAsync<string>(
                 new Request(GetFullMethodName("installPackage")).AddParameter(absoluteFilePath),
                 timeout
             );
@@ -45,7 +45,7 @@ namespace OpsiClientSharp.RpcInterfaces
         /// <returns>Nothing if successful otherwise an exception</returns>
         public Task UninstallPackageAsync(string productId, int timeout = 180)
         {
-            return OpsiClient.ExecuteAsync<string>(
+            return OpsiHttpClient.ExecuteAsync<string>(
                 new Request(GetFullMethodName("uninstallPackage")).AddParameter(productId)
             );
         }

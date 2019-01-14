@@ -8,7 +8,7 @@ namespace OpsiClientSharp.RpcInterfaces
     {
         public override string InterfaceName => "host";
 
-        public HostInterface(OpsiClient opsiClient) : base(opsiClient) { }
+        internal HostInterface(OpsiHttpClient opsiHttpClient) : base(opsiHttpClient) { }
 
         /// <summary>
         /// Retrieves all registered clients

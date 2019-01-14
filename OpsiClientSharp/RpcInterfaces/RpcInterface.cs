@@ -10,11 +10,11 @@ namespace OpsiClientSharp.RpcInterfaces
     {
         public abstract string InterfaceName { get; }
 
-        protected OpsiClient OpsiClient { get; }
+        protected OpsiHttpClient OpsiHttpClient { get; }
 
-        public RpcInterface(OpsiClient opsiClient)
+        internal RpcInterface(OpsiHttpClient opsiHttpClient)
         {
-            OpsiClient = opsiClient;
+            OpsiHttpClient = opsiHttpClient;
         }
 
         /// <summary>
@@ -72,7 +72,7 @@ namespace OpsiClientSharp.RpcInterfaces
 
         private Task<List<TResultObject>> GetAllAsyncInternal(RequestFilter requestFilter)
         {
-            return OpsiClient.ExecuteAsync<List<TResultObject>>(new Request(GetFullMethodName("getObjects")).Filter(requestFilter));
+            return OpsiHttpClient.ExecuteAsync<List<TResultObject>>(new Request(GetFullMethodName("getObjects")).Filter(requestFilter));
         }
     }
 }
