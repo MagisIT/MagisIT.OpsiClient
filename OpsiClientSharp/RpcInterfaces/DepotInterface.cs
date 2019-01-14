@@ -7,7 +7,7 @@ namespace OpsiClientSharp.RpcInterfaces
     {
         public override string InterfaceName => "depot";
 
-        internal DepotInterface(OpsiHttpClient opsiHttpClient) : base(opsiHttpClient) { }
+        public DepotInterface(OpsiHttpClient opsiHttpClient) : base(opsiHttpClient) { }
 
         /// <summary>
         /// Returns a md5 sum of a file in the depot

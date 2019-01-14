@@ -11,12 +11,9 @@ namespace OpsiClientSharp.RpcInterfaces
         internal HostInterface(OpsiHttpClient opsiHttpClient) : base(opsiHttpClient) { }
 
         /// <summary>
-        /// Retrieves all registered clients
+        ///     Retrieves all registered clients
         /// </summary>
         /// <returns></returns>
-        public Task<List<Host>> GetClientsAsync()
-        {
-            return GetAllAsync(new RequestFilter().Add("type", "OpsiClient"));
-        }
+        public Task<List<Host>> GetClientsAsync() => GetAllAsync(new RequestFilter().Add("type", "OpsiClient"));
     }
 }

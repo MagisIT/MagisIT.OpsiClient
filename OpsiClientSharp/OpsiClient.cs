@@ -3,6 +3,9 @@ using OpsiClientSharp.RpcInterfaces;
 
 namespace OpsiClientSharp
 {
+    /// <summary>
+    ///     Opsi-Client class communicating with the OPSI server rpc endpoint
+    /// </summary>
     public class OpsiClient
     {
         public BackendInterface BackendInterface { get; }
@@ -26,18 +29,12 @@ namespace OpsiClientSharp
         /// <summary>
         /// Returns a new product on client interface for the specified client id
         /// </summary>
-        /// <param name="clientId"></param>
         /// <returns></returns>
         public ProductsOnClientInterface GetProductsOnClientInterface(string clientId)
         {
             return new ProductsOnClientInterface(_opsiHttpClient, clientId);
         }
 
-        /// <summary>
-        /// Returns a new product on client interface for the specified client host
-        /// </summary>
-        /// <param name="host"></param>
-        /// <returns></returns>
         public ProductsOnClientInterface GetProductsOnClientInterface(Host host)
         {
             return new ProductsOnClientInterface(_opsiHttpClient, host);

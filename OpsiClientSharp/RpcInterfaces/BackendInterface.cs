@@ -11,14 +11,11 @@ namespace OpsiClientSharp.RpcInterfaces
         /// </summary>
         public override string InterfaceName => "backend";
 
-        internal BackendInterface(OpsiHttpClient opsiHttpClient) : base(opsiHttpClient) { }
+        public BackendInterface(OpsiHttpClient opsiHttpClient) : base(opsiHttpClient) { }
 
         /// <summary>
         /// Retrieve general opsi information of the backend
         /// </summary>
-        public Task<BackendInfo> InfoAsync()
-        {
-            return OpsiHttpClient.ExecuteAsync<BackendInfo>(new Request(GetFullMethodName("info")));
-        }
-    }
+        public Task<BackendInfo> InfoAsync() => OpsiHttpClient.ExecuteAsync<BackendInfo>(new Request(GetFullMethodName("info")));
+  }
 }
