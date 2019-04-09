@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using MagisIT.OpsiClient.Utils;
 using Newtonsoft.Json.Linq;
-using OpsiClientSharp.Utils;
 
-namespace OpsiClientSharp.Models
+namespace MagisIT.OpsiClient.Models
 {
     /// <summary>
     ///     Base class for an opsi rpc request

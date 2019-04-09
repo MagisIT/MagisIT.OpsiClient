@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using OpsiClientSharp.Models.Results;
+using MagisIT.OpsiClient.Models.Results;
 
-namespace OpsiClientSharp.RpcInterfaces
+namespace MagisIT.OpsiClient.RpcInterfaces
 {
     public class HostInterface : RpcInterface<Host>
     {

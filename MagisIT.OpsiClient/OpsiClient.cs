@@ -1,7 +1,7 @@
-using OpsiClientSharp.Models.Results;
-using OpsiClientSharp.RpcInterfaces;
+using MagisIT.OpsiClient.Models.Results;
+using MagisIT.OpsiClient.RpcInterfaces;
 
-namespace OpsiClientSharp
+namespace MagisIT.OpsiClient
 {
     /// <summary>
     ///     Opsi-Client class communicating with the OPSI server rpc endpoint

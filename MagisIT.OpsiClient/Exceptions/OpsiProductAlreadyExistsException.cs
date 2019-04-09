@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace OpsiClientSharp.Exceptions
+namespace MagisIT.OpsiClient.Exceptions
 {
     public class OpsiProductAlreadyExistsException : Exception
     {

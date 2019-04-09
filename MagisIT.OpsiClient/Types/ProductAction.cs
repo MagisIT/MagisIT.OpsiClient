@@ -1,6 +1,6 @@
 using System;
 
-namespace OpsiClientSharp.Types
+namespace MagisIT.OpsiClient.Types
 {
     public enum ProductAction
     {

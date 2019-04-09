@@ -2,7 +2,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 
-namespace OpsiClientSharp.Utils
+namespace MagisIT.OpsiClient.Utils
 {
     public abstract class JsonSerializable
     {

@@ -1,8 +1,8 @@
 using System.Threading.Tasks;
-using OpsiClientSharp.Models;
-using OpsiClientSharp.Models.Results;
+using MagisIT.OpsiClient.Models;
+using MagisIT.OpsiClient.Models.Results;
 
-namespace OpsiClientSharp.RpcInterfaces
+namespace MagisIT.OpsiClient.RpcInterfaces
 {
     public class BackendInterface : RpcInterface<BackendInfo>
     {

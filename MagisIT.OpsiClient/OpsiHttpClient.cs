@@ -7,13 +7,13 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using MagisIT.OpsiClient.Exceptions;
+using MagisIT.OpsiClient.Models;
+using MagisIT.OpsiClient.Utils;
 using Newtonsoft.Json;
-using OpsiClientSharp.Exceptions;
-using OpsiClientSharp.Models;
-using OpsiClientSharp.RpcInterfaces;
-using OpsiClientSharp.Utils;
+using MagisIT.OpsiClient.RpcInterfaces;
 
-namespace OpsiClientSharp
+namespace MagisIT.OpsiClient
 {
     /// <summary>
     /// Opsi-Client class communicating with the OPSI server rpc endpoint

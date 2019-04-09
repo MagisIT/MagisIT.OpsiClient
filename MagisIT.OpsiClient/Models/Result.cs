@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace OpsiClientSharp.Models
+namespace MagisIT.OpsiClient.Models
 {
     public class Result<TData>
     {

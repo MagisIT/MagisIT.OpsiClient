@@ -1,7 +1,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace OpsiClientSharp.Utils
+namespace MagisIT.OpsiClient.Utils
 {
     public class JsonSettings : JsonSerializerSettings
     {

@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
-using OpsiClientSharp.Models;
+using MagisIT.OpsiClient.Models;
 
-namespace OpsiClientSharp.RpcInterfaces
+namespace MagisIT.OpsiClient.RpcInterfaces
 {
     public class DepotInterface : RpcInterface<DepotInterface>
     {

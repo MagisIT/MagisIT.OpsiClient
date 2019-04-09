@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MagisIT.OpsiClient.Exceptions;
+using MagisIT.OpsiClient.Models;
+using MagisIT.OpsiClient.Models.Results;
+using MagisIT.OpsiClient.Types;
 using Newtonsoft.Json.Linq;
-using OpsiClientSharp.Exceptions;
-using OpsiClientSharp.Models;
-using OpsiClientSharp.Models.Results;
-using OpsiClientSharp.Types;
 
-namespace OpsiClientSharp.RpcInterfaces
+namespace MagisIT.OpsiClient.RpcInterfaces
 {
     public class ProductsOnClientInterface : RpcInterface<ProductOnClient>
     {

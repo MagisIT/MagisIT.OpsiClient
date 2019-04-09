@@ -1,6 +1,6 @@
-using OpsiClientSharp.Utils;
+using MagisIT.OpsiClient.Utils;
 
-namespace OpsiClientSharp.Models.Results
+namespace MagisIT.OpsiClient.Models.Results
 {
     public class ProductOnClient : JsonSerializable
     {

@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using OpsiClientSharp.Models.Results;
-using OpsiClientSharp.Types;
+using MagisIT.OpsiClient.Models.Results;
+using MagisIT.OpsiClient.Types;
 
-namespace OpsiClientSharp.RpcInterfaces
+namespace MagisIT.OpsiClient.RpcInterfaces
 {
     public class ProductsInterface : RpcInterface<Product>
     {

@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using OpsiClientSharp.Exceptions;
-using OpsiClientSharp.Models;
+using MagisIT.OpsiClient.Exceptions;
+using MagisIT.OpsiClient.Models;
 
-namespace OpsiClientSharp.RpcInterfaces
+namespace MagisIT.OpsiClient.RpcInterfaces
 {
     public abstract class RpcInterface<TResultObject>
     {

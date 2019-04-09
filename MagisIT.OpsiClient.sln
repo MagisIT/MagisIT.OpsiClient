@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpsiClientSharp", "OpsiClientSharp\OpsiClientSharp.csproj", "{21658835-F557-46E8-8F88-B1EE35B05726}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MagisIT.OpsiClient", "MagisIT.OpsiClient\MagisIT.OpsiClient.csproj", "{21658835-F557-46E8-8F88-B1EE35B05726}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
