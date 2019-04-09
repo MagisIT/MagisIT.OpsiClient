@@ -11,7 +11,6 @@ using MagisIT.OpsiClient.Exceptions;
 using MagisIT.OpsiClient.Models;
 using MagisIT.OpsiClient.Utils;
 using Newtonsoft.Json;
-using MagisIT.OpsiClient.RpcInterfaces;
 
 namespace MagisIT.OpsiClient
 {

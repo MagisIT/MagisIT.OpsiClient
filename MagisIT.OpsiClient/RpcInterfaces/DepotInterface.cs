@@ -25,7 +25,6 @@ namespace MagisIT.OpsiClient.RpcInterfaces
         /// Installs an opsi package.
         /// This method returns as soon as the installation is fully completed
         /// </summary>
-        /// <see cref="OpsiPackageUploader">To upload a file to the server use the OpsiPackageUploader</see>
         /// <param name="absoluteFilePath"></param>
         /// <param name="timeout">The timeout to wait until the product is installed. We don't have any status update only if an error appears. Another solution would be to use the SSH Command or check the logs</param>
         /// <returns>Nothing if successful otherwise an exception</returns>

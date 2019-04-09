@@ -5,7 +5,6 @@ using MagisIT.OpsiClient.Exceptions;
 using MagisIT.OpsiClient.Models;
 using MagisIT.OpsiClient.Models.Results;
 using MagisIT.OpsiClient.Types;
-using Newtonsoft.Json.Linq;
 
 namespace MagisIT.OpsiClient.RpcInterfaces
 {
@@ -19,7 +18,7 @@ namespace MagisIT.OpsiClient.RpcInterfaces
         {
             ClientId = clientId;
         }
-        
+
         internal ProductsOnClientInterface(OpsiHttpClient opsiHttpClient, Host host) : base(opsiHttpClient)
         {
             ClientId = host.Id;
@@ -56,7 +55,7 @@ namespace MagisIT.OpsiClient.RpcInterfaces
         /// <returns></returns>
         public async Task<bool> IsProductCreatedAsync(Product product)
         {
-            return await GetAsync(product.Id) != null;
+            return await GetAsync(product.Id).ConfigureAwait(false) != null;
         }
 
         /// <summary>
@@ -66,11 +65,11 @@ namespace MagisIT.OpsiClient.RpcInterfaces
         /// <returns></returns>
         public async Task CreateProductAsync(Product product)
         {
-            if (await IsProductCreatedAsync(product))
+            if (await IsProductCreatedAsync(product).ConfigureAwait(false))
                 throw new OpsiProductAlreadyExistsException($"The product {product.Id} is already defined for this client {ClientId}");
 
             // Create the product definition for this client
-            await OpsiHttpClient.ExecuteAsync<List<string>>(new Request(GetFullMethodName("create")).AddParameters(product.Id, product.Type, ClientId));
+            await OpsiHttpClient.ExecuteAsync<List<string>>(new Request(GetFullMethodName("create")).AddParameters(product.Id, product.Type, ClientId)).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -79,34 +78,34 @@ namespace MagisIT.OpsiClient.RpcInterfaces
         /// <param name="product"></param>
         /// <param name="productAction"></param>
         /// <returns></returns>
-        public Task SetProductAction(Product product, ProductAction productAction)
+        public Task SetProductActionAsync(Product product, ProductAction productAction)
         {
-            return SetProductsAction(new List<Product> { product }, productAction);
+            return SetProductsActionAsync(new List<Product> { product }, productAction);
         }
 
-        public async Task SetProductsAction(List<Product> products, ProductAction productAction)
+        public async Task SetProductsActionAsync(List<Product> products, ProductAction productAction)
         {
             // Get all products for this client
-            List<ProductOnClient> productsOnClient = await GetAllAsync();
+            List<ProductOnClient> productsOnClient = await GetAllAsync().ConfigureAwait(false);
 
             // Get all products that aren't already created for this client
-            List<Product> notCreatedProducts = products.Where((product) => productsOnClient.All(productOnClient => productOnClient.ProductId != product.Id)).ToList();
+            List<Product> notCreatedProducts = products.Where(product => productsOnClient.All(productOnClient => productOnClient.ProductId != product.Id)).ToList();
 
             // Create objects if any need to be created
             foreach (var product in notCreatedProducts)
-                await CreateProductAsync(product);
+                await CreateProductAsync(product).ConfigureAwait(false);
 
             // Update productsOnClient only if there are new products for this client
             if (notCreatedProducts.Any())
-                productsOnClient = await GetAllAsync();
+                productsOnClient = await GetAllAsync().ConfigureAwait(false);
 
             // Get all Products On Client that should be applied
-            productsOnClient = productsOnClient.Where((productOnClient) => products.Any((product) => product.Id == productOnClient.ProductId)).ToList();
+            productsOnClient = productsOnClient.Where(productOnClient => products.Any(product => product.Id == productOnClient.ProductId)).ToList();
 
             // Set Action for all products
-            productsOnClient.ForEach((productOnClient) => productOnClient.ActionRequest = productAction.ToOpsiName());
+            productsOnClient.ForEach(productOnClient => productOnClient.ActionRequest = productAction.ToOpsiName());
 
-            await OpsiHttpClient.ExecuteAsync<List<string>>(new Request(GetFullMethodName("updateObjects")).AddParametersAsJArray(productsOnClient));
+            await OpsiHttpClient.ExecuteAsync<List<string>>(new Request(GetFullMethodName("updateObjects")).AddParametersAsJArray(productsOnClient)).ConfigureAwait(false);
         }
     }
 }

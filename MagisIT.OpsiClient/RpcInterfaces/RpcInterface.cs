@@ -43,7 +43,7 @@ namespace MagisIT.OpsiClient.RpcInterfaces
         /// <returns></returns>
         public async Task<List<TResultObject>> GetAllAsync(RequestFilter requestFilter)
         {
-            List<TResultObject> resultObjects = await GetAllAsyncInternal(requestFilter);
+            List<TResultObject> resultObjects = await GetAllAsyncInternalAsync(requestFilter).ConfigureAwait(false);
             if (!resultObjects.Any())
                 throw new OpsiClientRequestException($"Cannot find objects on interface {InterfaceName} with request filter {requestFilter.ToJson()}");
 
@@ -57,7 +57,7 @@ namespace MagisIT.OpsiClient.RpcInterfaces
         /// <returns>The element or null if the result was empty</returns>
         public async Task<TResultObject> GetAsync(RequestFilter requestFilter)
         {
-            return (await GetAllAsync(requestFilter)).First();
+            return (await GetAllAsync(requestFilter).ConfigureAwait(false)).First();
         }
 
         /// <summary>
@@ -67,10 +67,10 @@ namespace MagisIT.OpsiClient.RpcInterfaces
         /// <returns></returns>
         public async Task<bool> ExistsAsync(RequestFilter requestFilter)
         {
-            return (await GetAllAsyncInternal(requestFilter)).Any();
+            return (await GetAllAsyncInternalAsync(requestFilter).ConfigureAwait(false)).Any();
         }
 
-        private Task<List<TResultObject>> GetAllAsyncInternal(RequestFilter requestFilter)
+        private Task<List<TResultObject>> GetAllAsyncInternalAsync(RequestFilter requestFilter)
         {
             return OpsiHttpClient.ExecuteAsync<List<TResultObject>>(new Request(GetFullMethodName("getObjects")).Filter(requestFilter));
         }
